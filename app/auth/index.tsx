@@ -3,12 +3,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../services/firebase';
+import { auth, db } from '../../services/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function AuthScreen() {
-  const router = useRouter(); // аналог navigation (expo-router)
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // Нові поля:
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
 
@@ -16,11 +21,25 @@ export default function AuthScreen() {
     setError('');
     try {
       if (isLogin) {
+        // Логін
         await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        // Реєстрація
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Якщо користувач створений, зберігаємо дод. дані у Firestore
+        if (user) {
+          await setDoc(doc(db, 'users', user.uid), {
+            // Ті поля, які ви хочете зберігати
+            name: name,
+            phone: phone,
+            email: user.email,
+            createdAt: Date.now(),
+          });
+        }
       }
-      router.replace('/'); // після успішної авторизації → Home
+      router.replace('/'); // Переходимо на головну (або '/user'), як бажаєте
     } catch (err: any) {
       setError(err.message);
     }
@@ -31,6 +50,7 @@ export default function AuthScreen() {
       <Text style={styles.title}>{isLogin ? 'Логін' : 'Реєстрація'}</Text>
       {!!error && <Text style={styles.error}>{error}</Text>}
 
+      {/* Загальні поля */}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -45,6 +65,24 @@ export default function AuthScreen() {
         onChangeText={setPassword}
         value={password}
       />
+
+      {/* Поля, що потрібні лише при реєстрації */}
+      {!isLogin && (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="Ім'я"
+            onChangeText={setName}
+            value={name}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Телефон"
+            onChangeText={setPhone}
+            value={phone}
+          />
+        </>
+      )}
 
       <Button title={isLogin ? 'Увійти' : 'Зареєструватись'} onPress={handleAuth} />
       <Button

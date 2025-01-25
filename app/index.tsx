@@ -35,6 +35,8 @@ export default function HomeScreen() {
       <Link href="/cart" style={styles.link}>
         Перейти до Кошика
       </Link>
+      <Link href="/user" style={styles.link}>Мій профіль</Link>
+
 
       <FlatList
         data={products}
