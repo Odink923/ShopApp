@@ -1,6 +1,6 @@
 // app/auth/index.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Box, Heading, Input, Button, Text, VStack } from 'native-base';
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../services/firebase';
@@ -13,7 +13,7 @@ export default function AuthScreen() {
   // Нові поля:
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  
+
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState('');
 
@@ -27,81 +27,73 @@ export default function AuthScreen() {
         // Реєстрація
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        
+
         // Якщо користувач створений, зберігаємо дод. дані у Firestore
         if (user) {
           await setDoc(doc(db, 'users', user.uid), {
-            // Ті поля, які ви хочете зберігати
-            name: name,
-            phone: phone,
+            name,
+            phone,
             email: user.email,
             createdAt: Date.now(),
           });
         }
       }
-      router.replace('/'); // Переходимо на головну (або '/user'), як бажаєте
+      router.replace('/'); // Переходимо на головну
     } catch (err: any) {
       setError(err.message);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{isLogin ? 'Логін' : 'Реєстрація'}</Text>
-      {!!error && <Text style={styles.error}>{error}</Text>}
+    <Box flex={1} justifyContent="center" p={4} bg="white">
+      <Heading textAlign="center" mb={4}>
+        {isLogin ? 'Логін' : 'Реєстрація'}
+      </Heading>
 
-      {/* Загальні поля */}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Пароль"
-        secureTextEntry
-        onChangeText={setPassword}
-        value={password}
-      />
-
-      {/* Поля, що потрібні лише при реєстрації */}
-      {!isLogin && (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Ім'я"
-            onChangeText={setName}
-            value={name}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Телефон"
-            onChangeText={setPhone}
-            value={phone}
-          />
-        </>
+      {!!error && (
+        <Text color="red.500" mb={2}>
+          {error}
+        </Text>
       )}
 
-      <Button title={isLogin ? 'Увійти' : 'Зареєструватись'} onPress={handleAuth} />
-      <Button
-        title={isLogin ? 'Перейти до реєстрації' : 'Перейти до логіну'}
-        onPress={() => setIsLogin(!isLogin)}
-      />
-    </View>
+      <VStack space={4}>
+        {/* Базові поля */}
+        <Input
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <Input
+          placeholder="Пароль"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        {/* Додаткові поля для реєстрації */}
+        {!isLogin && (
+          <>
+            <Input
+              placeholder="Ім'я"
+              value={name}
+              onChangeText={setName}
+            />
+            <Input
+              placeholder="Телефон"
+              value={phone}
+              onChangeText={setPhone}
+            />
+          </>
+        )}
+
+        {/* Кнопки */}
+        <Button onPress={handleAuth}>
+          {isLogin ? 'Увійти' : 'Зареєструватись'}
+        </Button>
+        <Button variant="outline" onPress={() => setIsLogin(!isLogin)}>
+          {isLogin ? 'Перейти до реєстрації' : 'Перейти до логіну'}
+        </Button>
+      </VStack>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 24, marginBottom: 16 },
-  error: { color: 'red', marginBottom: 8 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 12,
-    borderRadius: 4,
-    padding: 8
-  }
-});
