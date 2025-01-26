@@ -1,14 +1,14 @@
+// app/products/index.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../services/firebase';
+import { Box, Heading, FlatList, Text, Pressable } from 'native-base';
 
 interface Product {
   id: string;
   title: string;
   price: number;
-  // ... інші поля, якщо потрібно
 }
 
 export default function ProductsIndex() {
@@ -31,28 +31,27 @@ export default function ProductsIndex() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Список товарів</Text>
+    <Box flex={1} p={4} bg="white">
+      <Heading mb={4}>Список товарів</Heading>
 
       <FlatList
         data={products}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          /**
-           * Посилання на сторінку /products/123,
-           * де [123] - це item.id
-           */
-          <Link href={`/products/${item.id}`} style={styles.link}>
-            {item.title} – {item.price} грн
-          </Link>
+          <Pressable
+            bg="gray.100"
+            p={3}
+            borderRadius={6}
+            mb={2}
+          >
+            <Link href={`/products/${item.id}`}>
+              <Text fontSize="md" color="black">
+                {item.title} – {item.price} грн
+              </Text>
+            </Link>
+          </Pressable>
         )}
       />
-    </View>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, marginBottom: 12 },
-  link: { color: 'blue', marginVertical: 4 },
-});

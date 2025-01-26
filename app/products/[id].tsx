@@ -1,10 +1,10 @@
 // app/products/[id].tsx
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
-import { CartContext } from '@/AppProvider'; // імпорт контексту
+import { CartContext } from '@/AppProvider'; // ваш шлях до CartContext
+import { Box, Text, Button, Heading } from 'native-base';
 
 interface Product {
   id: string;
@@ -18,7 +18,6 @@ export default function ProductDetailScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
 
-  // Дістаємо з контексту метод addToCart
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
@@ -39,9 +38,9 @@ export default function ProductDetailScreen() {
 
   if (!product) {
     return (
-      <View style={styles.container}>
+      <Box flex={1} p={4} justifyContent="center" bg="white">
         <Text>Завантаження...</Text>
-      </View>
+      </Box>
     );
   }
 
@@ -52,16 +51,12 @@ export default function ProductDetailScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{product.title}</Text>
-      <Text style={styles.price}>{product.price} грн</Text>
-      <Button title="Додати в кошик" onPress={handleAddToCart} />
-    </View>
+    <Box flex={1} p={4} bg="white">
+      <Heading size="lg" mb={2}>{product.title}</Heading>
+      <Text fontSize="lg" mb={4}>
+        {product.price} грн
+      </Text>
+      <Button onPress={handleAddToCart}>Додати в кошик</Button>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, fontWeight: 'bold' },
-  price: { marginVertical: 8, fontSize: 16 }
-});

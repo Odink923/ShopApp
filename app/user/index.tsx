@@ -1,21 +1,25 @@
 // app/user/index.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { auth, db } from '../../services/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
+import {
+  Box,
+  Text,
+  Button,
+  Heading,
+  VStack
+} from 'native-base';
 
 export default function UserProfile() {
   const router = useRouter();
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
 
-  // Поля з Firestore
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
   useEffect(() => {
-    // Слідкуємо за станом авторизації
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setFirebaseUser(currentUser);
     });
@@ -24,15 +28,13 @@ export default function UserProfile() {
 
   useEffect(() => {
     async function fetchUserDoc() {
-      if (!firebaseUser) return; // якщо не авторизовані, не робимо
+      if (!firebaseUser) return;
       const docRef = doc(db, 'users', firebaseUser.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
-        if (data) {
-          setName(data.name || '');
-          setPhone(data.phone || '');
-        }
+        setName(data?.name || '');
+        setPhone(data?.phone || '');
       }
     }
     fetchUserDoc();
@@ -45,28 +47,29 @@ export default function UserProfile() {
 
   if (!firebaseUser) {
     return (
-      <View style={styles.container}>
-        <Text>Ви не авторизовані</Text>
-        <Button title="Перейти до логіну" onPress={() => router.push('/auth')} />
-      </View>
+      <Box flex={1} p={4} justifyContent="center" alignItems="center" bg="white">
+        <Text mb={2}>Ви не авторизовані</Text>
+        <Button variant="outline" onPress={() => router.push('/auth')}>
+          Перейти до логіну
+        </Button>
+      </Box>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Профіль користувача</Text>
-      <Text>UID: {firebaseUser.uid}</Text>
-      <Text>Email: {firebaseUser.email}</Text>
+    <Box flex={1} p={4} bg="white">
+      <Heading mb={4}>Профіль користувача</Heading>
 
-      <Text>Ім'я: {name}</Text>
-      <Text>Телефон: {phone}</Text>
+      <VStack space={2}>
+        <Text>UID: {firebaseUser.uid}</Text>
+        <Text>Email: {firebaseUser.email}</Text>
+        <Text>Ім'я: {name}</Text>
+        <Text>Телефон: {phone}</Text>
+      </VStack>
 
-      <Button title="Вийти" onPress={handleLogout} />
-    </View>
+      <Button onPress={handleLogout} mt={6}>
+        Вийти
+      </Button>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: 'center' },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
-});

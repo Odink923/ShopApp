@@ -1,9 +1,10 @@
 // app/index.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router'; // дозволяє переходити між маршрутами
+import { Link } from 'expo-router';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import { Box, Heading, Text, VStack, Button, FlatList, Pressable } from 'native-base';
+import { useRouter } from 'expo-router';
 
 interface Product {
   id: string;
@@ -25,39 +26,46 @@ export default function HomeScreen() {
     }
     fetchProducts();
   }, []);
-
+  const router = useRouter();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Головна</Text>
-      <Link href="/auth" style={styles.link}>
-        Перейти до Авторизації
-      </Link>
-      <Link href="/cart" style={styles.link}>
-        Перейти до Кошика
-      </Link>
-      <Link href="/user" style={styles.link}>Мій профіль</Link>
+    <Box flex={1} p={4} bg="white">
+      <Heading mb={4}>Головна</Heading>
 
+      <VStack space={2} mb={4}>
+      <Button variant="outline" colorScheme="primary" onPress={() => router.push('/auth')}>
+    Перейти до Авторизації
+  </Button>
+        
+        <Button variant="outline" colorScheme="primary" onPress={() => router.push('/cart')}>
+            Перейти до Кошика
+          </Button>
+     
+        
+        <Button variant="outline" colorScheme="primary" onPress={() => router.push('/user')}>
+            Мій профіль
+          </Button>
+      
+      </VStack>
 
       <FlatList
         data={products}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item} onPress={() => {/* Навігувати */}}>
-            {/* У Expo Router – можна Link використати */}
-            <Link href={`/products/${item.id}`} style={styles.itemTitle}>
-              {item.title} – {item.price} грн
+          <Pressable
+            bg="gray.100"
+            p={3}
+            borderRadius={6}
+            mb={2}
+          >
+            {/* Для навігації */}
+            <Link href={`/products/${item.id}`}>
+              <Text fontSize="md" color="black">
+                {item.title} – {item.price} грн
+              </Text>
             </Link>
-          </TouchableOpacity>
+          </Pressable>
         )}
       />
-    </View>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, marginBottom: 16 },
-  link: { color: 'blue', marginVertical: 4 },
-  item: { marginBottom: 8, padding: 8, backgroundColor: '#fff', borderRadius: 4 },
-  itemTitle: { color: '#000' },
-});

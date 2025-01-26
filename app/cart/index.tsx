@@ -1,8 +1,16 @@
 // app/cart/index.tsx
 import React, { useContext } from 'react';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { CartContext } from '@/AppProvider'; // імпорт контексту
+import { CartContext } from '@/AppProvider';
+import {
+  Box,
+  Heading,
+  Text,
+  Button,
+  FlatList,
+  HStack,
+  VStack
+} from 'native-base';
 
 export default function CartScreen() {
   const { cartItems, clearCart } = useContext(CartContext);
@@ -13,10 +21,12 @@ export default function CartScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Кошик</Text>
-      <Link href="/" style={{ marginBottom: 12, color: 'blue' }}>
-        На головну
+    <Box flex={1} p={4} bg="white">
+      <Heading mb={4}>Кошик</Heading>
+      <Link href="/" >
+        <Button variant="outline" colorScheme="primary" mb={4}>
+          На головну
+        </Button>
       </Link>
 
       {cartItems.length === 0 ? (
@@ -26,28 +36,24 @@ export default function CartScreen() {
           data={cartItems}
           keyExtractor={(item, index) => item.id + index}
           renderItem={({ item }) => (
-            <View style={styles.cartItem}>
+            <HStack
+              justifyContent="space-between"
+              p={3}
+              mb={2}
+              borderWidth={1}
+              borderColor="gray.300"
+              borderRadius={6}
+            >
               <Text>{item.title}</Text>
               <Text>{item.price} грн</Text>
-            </View>
+            </HStack>
           )}
         />
       )}
 
-      <Button title="Оформити замовлення" onPress={handleCheckout} />
-    </View>
+      <Button onPress={handleCheckout} mt={4}>
+        Оформити замовлення
+      </Button>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, marginBottom: 16 },
-  cartItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 8,
-    borderWidth: 1,
-    marginBottom: 8,
-    borderRadius: 4
-  }
-});
