@@ -6,6 +6,7 @@ import { Colors } from '../constants/Colors';
 import { useAuthListener } from '../hooks/useAuthListener';
 import { AppProvider } from '@/AppProvider';
 import { NativeBaseProvider, extendTheme } from 'native-base';
+import { BottomNavigation } from '@/components/BottomNavigation';
 export default function Layout() {
   const { user } = useAuthListener();
 
@@ -20,6 +21,7 @@ export default function Layout() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <Stack screenOptions={{ headerStyle: { backgroundColor: Colors.primary }}} />
+        <BottomNavigation />
       </View>
     </SafeAreaView>
     </AppProvider>
