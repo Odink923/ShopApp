@@ -20,7 +20,10 @@ export default function Layout() {
     <AppProvider>
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Stack screenOptions={{ headerStyle: { backgroundColor: Colors.primary }}} />
+        <Stack   screenOptions={{ 
+    headerStyle: { backgroundColor: Colors.primary },
+    headerShown: false // Додаємо цей параметр
+  }}  />
         <BottomNavigation />
       </View>
     </SafeAreaView>
