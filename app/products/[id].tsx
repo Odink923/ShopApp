@@ -107,7 +107,7 @@ export default function ProductDetailScreen() {
   }
 
   return (
-    <Box flex={1} bg="coolGray.50" p={4}>
+    <Box flex={1} bg="coolGray.50" pt={16} p={4}>
       {/* Виправлено позиціонування бейджа */}
       <Box position="relative"> 
         {product.isNew && (

@@ -78,7 +78,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <Box flex={1} bg="coolGray.50" safeAreaTop>
+    <Box flex={1} pt={4} bg="coolGray.50" safeAreaTop>
       <Heading p={4} fontSize="2xl" color="primary.600">
         Популярні товари
       </Heading>

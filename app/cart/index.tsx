@@ -46,11 +46,9 @@ export default function CartScreen() {
   };
 
   return (
-    <Box flex={1} bg="coolGray.50">
-      <Box px={4} pt={4} bg="white" shadow={2} borderBottomWidth={1} borderColor="coolGray.200">
-        <Heading size="xl" color="primary.600" mb={4}>
-          Кошик
-        </Heading>
+    <Box flex={1} pt={4} bg="coolGray.50">
+      <Box px={4} pt={4} >
+        
       </Box>
 
       {cartItems.length === 0 ? (
@@ -66,7 +64,7 @@ export default function CartScreen() {
           </Text>
           <Button
             variant="solid"
-            bg="primary.600"
+            bg="primary.500"
             _pressed={{ bg: 'primary.700' }}
             onPress={() => (window.location.href = '/')}
           >
@@ -101,7 +99,7 @@ export default function CartScreen() {
                     )}
                   </VStack>
                   <VStack alignItems="flex-end">
-                    <Text fontSize="lg" fontWeight="bold" color="primary.600">
+                    <Text fontSize="lg" fontWeight="bold" color="primary.500">
                       {(item.price * item.quantity).toLocaleString('uk-UA')} грн
                     </Text>
                     <Button

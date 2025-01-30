@@ -15,18 +15,18 @@
         alignItems="center" 
         py={3}
         borderTopWidth={1}
-        borderTopColor="blue.100"
+         borderColor="coolGray.200"
         >
         <IconButton
-        icon={<Icon as={MaterialIcons} name="home" size="lg" color="blue.600" />}
+        icon={<Icon as={MaterialIcons} name="home" size="lg" color="blue.500" />}
         onPress={() => router.push('/')} // Перехід на головну
         />
         <IconButton
-            icon={<Icon as={MaterialIcons} name="shopping-cart" size="lg" color="blue.600" />}
+            icon={<Icon as={MaterialIcons} name="shopping-cart" size="lg" color="blue.500" />}
             onPress={() => router.push('/cart')}
         />
         <IconButton
-            icon={<Icon as={MaterialIcons} name="account-circle" size="lg" color="blue.600" />}
+            icon={<Icon as={MaterialIcons} name="account-circle" size="lg" color="blue.500" />}
             onPress={() => router.push('/user')}
         />
         </HStack>
